@@ -26,6 +26,17 @@ class CartAPI(APIView):
         cart_item= CartItem(product_name=product, user=user, cart=cart, price= price, quantity= quantity)
         cart_item.save()
 
+        cart_item= CartItem.objects.filter(user=user , cart=cart.id)
+        total_price= 0
+        for item in cart_item:
+            total_price += item.price
+            print(f"Item Price :{item.price}")
+        cart.total_price= total_price
+        print(cart.total_price)
+
+        cart.save()  
+
+
         return Response({"success":"Product Added Successfully."})
 
     def update(self, request):
