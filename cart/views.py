@@ -26,8 +26,8 @@ class CartAPI(APIView):
         cart_item= CartItem(product_name=product, user=user, cart=cart, price= price, quantity= quantity)
         cart_item.save()
 
-        cart_item= CartItem.objects.filter(user=user , cart=cart.id)
         total_price= 0
+        cart_item= CartItem.objects.filter(user=user , cart=cart.id)
         for item in cart_item:
             total_price += item.price
             print(f"Item Price :{item.price}")
