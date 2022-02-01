@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
-# from .serializers import *
+from .serializers import *
 from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
@@ -12,8 +12,13 @@ class CartAPI(APIView):
     def get(self, request):
         user= request.user
         print(user)
+        quaryset= CartItem.objects.filter(user=user)
 
-        return Response({'Success':"Authenticated successfully."})
+        
+        serializer = CartItemSerializer(quaryset, many= True)
+
+
+        return Response({'Success':"Authenticated successfully.", "data":serializer.data})
 
     def post(self, request):
         data= request.data
@@ -39,8 +44,23 @@ class CartAPI(APIView):
 
         return Response({"success":"Product Added Successfully."})
 
-    def update(self, request):
-        return Response({})
+    def put(self, request):
+        data= request.data
+        item= CartItem.objects.get(id= data.get('id'))
+        quantity= data.get('quantity')
+        item.quantity += quantity
+        item.save()
+
+        return Response({"status":"data updated successfully."})
 
     def delete(self, request):
-        return Response({})
+        user= request.user
+        data= request.data
+        item= CartItem.objects.get(id= data.get('id'))
+        item.delete()
+        queryset= CartItem.objects.filter(user=user)
+        serializer= CartItemSerializer(queryset, many=True)
+
+
+
+        return Response({"data":serializer.data})
