@@ -13,11 +13,8 @@ class CartAPI(APIView):
         user= request.user
         print(user)
         quaryset= CartItem.objects.filter(user=user)
-
-        
         serializer = CartItemSerializer(quaryset, many= True)
-
-
+     
         return Response({'Success':"Authenticated successfully.", "data":serializer.data})
 
     def post(self, request):
