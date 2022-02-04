@@ -2,6 +2,8 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import User
 from products.models import Product
+import uuid
+from datetime import time
 
 #django signals
 from django.db.models.signals import pre_save, post_save
@@ -44,4 +46,21 @@ def my_handler(sender, **kwargs):
     # cart.total_items = len(cart_item.product_name)
     
 
+
+
+class Order(models.Model):
+    order_id= models.UUIDField(primary_key=True, default=uuid.uuid4)
+    order_date= models.DateTimeField(auto_now_add=True)
+    user= models.ForeignKey(User, on_delete=models.CASCADE)
+    cart= models.ForeignKey(Cart, on_delete=models.CASCADE)
+    is_paid= models.BooleanField(default=False)
+    payment_id= models.IntegerField(max_length=100, blank=True)
+    payment_signature= models.IntegerField(max_length=100, blank=True)
+
+
+class OrderedItem(models.Model):
+    order= models.ForeignKey(Order, on_delete=models.CASCADE)
+    user= models.ForeignKey(User,on_delete=models.CASCADE)
     
+
+
